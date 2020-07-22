@@ -1,68 +1,120 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 5F — 全台空氣指標儀表板
 
-## Available Scripts
+## 使用技術
+- react
+- typeScript
+- material ui
+<p>先將版型區分好，切好版</p>
+<img src="./src/images/demo/01.png">
+<p>RWD</p>
+<img src="./src/images/demo/02.png">
 
-In the project directory, you can run:
+### 引入自訂義的主題色
 
-### `yarn start`
+```
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+```
+<p>在要傳遞顏色的父層組件用ThemeProvider包在最外層</p>
+<p>並使用createMuiTheme定義需要的自訂顏色</p>
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```js
+// TS定義型別
+declare module '@material-ui/core/styles/createMuiTheme' {
+  interface Theme {
+    custom: {
+      green: string,
+      yellow: string,
+      orange: string,
+      red: string,
+      blue: string,
+      purple: string,
+    };
+  }
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+  interface ThemeOptions {
+    custom?: {
+      green?: string,
+      yellow?: string,
+      orange?: string,
+      red?: string,
+      blue?: string,
+      purple?: string,
+    };
+  }
+}
 
-### `yarn test`
+const theme = createMuiTheme({
+  custom: {
+    green: 'green',
+    yellow: 'yellow',
+    orange: 'orange',
+    red: 'red',
+    blue: 'blue',
+    purple: 'purple',
+  }
+});
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+ReactDOM.render(
+  <ThemeProvider theme={theme}>
+    <App />
+  </ThemeProvider>
+  ,
+  document.getElementById('root')
+);
+```
+<p>這樣App以下的元件皆可以用theme.custom定義的顏色</p>
 
-### `yarn build`
+```js
+// EX:
+mainBg: {
+    background: theme.custom.green
+}
+```
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 獲取API資料，將API統一管理
+- 新增一個資料夾專門管理API檔案 (common/api.tsx)
+- 使用axios.create定義baseURL(網址)，這樣的好處是之後如果API需要更改可以直接改baseURL
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```js
+import axios from 'axios'
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+const airOpendata = axios.create({
+    baseURL: 'https://data.epa.gov.tw',
+})
+// 取得各地數據 API
+export const getAirData = (data = {}) => airOpendata.get('/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&format=json', data)
+```
 
-### `yarn eject`
+- 在需要資料的原件用then接收response資料
+```js
+useEffect( () => {
+    console.log('useEffect')
+    getAirData()
+    .then(res => {
+        if(res.status === 200){
+        setCityList(res.data.records)
+        }
+    })
+    .catch(rej => console.log(rej))
+},[])
+```
+- 過濾父組件(App)傳遞下來的資料
+```js
+// 定義props(TS)
+interface IProps {
+    // 表示cityList陣列裡面有數個{ICitylist}的定義
+    cityList: ICitylist[]
+}
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+```js
+// 先用map取得需要的城市名稱
+const cityName = props.cityList.map((item: ICitylist, index, arr) => {
+    return item.County
+})
+// 在此用filter過濾重複值
+const filterCityName = cityName.filter((item, index, arr) => {
+    return arr.indexOf(item) === index
+})
+```
+<img src="./src/images/demo/03.png">
