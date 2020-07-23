@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.js": "/react_airQuality_App/static/js/main.784211b0.chunk.js",
+    "main.js.map": "/react_airQuality_App/static/js/main.784211b0.chunk.js.map",
+    "runtime-main.js": "/react_airQuality_App/static/js/runtime-main.06538aa5.js",
+    "runtime-main.js.map": "/react_airQuality_App/static/js/runtime-main.06538aa5.js.map",
+    "static/js/2.e1800b7f.chunk.js": "/react_airQuality_App/static/js/2.e1800b7f.chunk.js",
+    "static/js/2.e1800b7f.chunk.js.map": "/react_airQuality_App/static/js/2.e1800b7f.chunk.js.map",
+    "index.html": "/react_airQuality_App/index.html",
+    "precache-manifest.0f7155e8a9a366e9b81603d21eca03e7.js": "/react_airQuality_App/precache-manifest.0f7155e8a9a366e9b81603d21eca03e7.js",
+    "service-worker.js": "/react_airQuality_App/service-worker.js",
+    "static/js/2.e1800b7f.chunk.js.LICENSE.txt": "/react_airQuality_App/static/js/2.e1800b7f.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.06538aa5.js",
+    "static/js/2.e1800b7f.chunk.js",
+    "static/js/main.784211b0.chunk.js"
+  ]
+}
