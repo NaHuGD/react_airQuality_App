@@ -118,3 +118,55 @@ const filterCityName = cityName.filter((item, index, arr) => {
 })
 ```
 <img src="./src/images/demo/03.png">
+
+### 使用CSS變量判斷顏色顯示
+
+<a href="https://material-ui.com/zh/customization/components/#css-variables">CSS變量</a>
+
+- 給予background要監聽的變數
+
+```js
+// const useStyles = makeStyles((theme: Theme) => ({})
+    bgColor: {
+        background: 'var(--bgColor)'
+    },
+```
+
+- 使用React.CSSProperties回傳變數值
+
+```js
+const setColor = (bgColor: string) => {
+    return {
+        '--bgColor': bgColor,
+    } as React.CSSProperties
+}
+```
+
+- 用一個function監聽變數的值，依不同的值回傳不同的顏色
+
+```js
+// 判斷空氣顯示的顏色
+    const setStyle = (currentAqi: string) => {
+        // 轉換成數字比對
+        const num = parseInt(currentAqi)
+        if (num <= 50){
+            return setColor(theme.custom.green)
+        } else if( num >= 51 && num <= 100) {
+            return setColor(theme.custom.yellow)
+        } else if( num >= 101 && num <= 150) {
+            return setColor(theme.custom.orange)
+        }else if( num >= 151 && num <= 200) {
+            return setColor(theme.custom.red)
+        }else if( num >= 201 && num <= 250) {
+            return setColor(theme.custom.blue)
+        }else if( num >= 251 && num <= 300) {
+            return setColor(theme.custom.purple)
+        }
+    }
+```
+
+- 在要使用的地方
+
+```js
+<Box className={classes.bgColor} style={setStyle(item.AQI)}>test</Box>
+```

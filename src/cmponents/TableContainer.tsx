@@ -8,7 +8,6 @@ import { Select, MenuItem , FormControl, InputLabel  } from '@material-ui/core';
 import { IAirInfo } from '../interface/props'
 
 const useStyles = makeStyles((theme: Theme) => ({
-
     formControl: {
         width: '100%',
         minWidth: 120,
